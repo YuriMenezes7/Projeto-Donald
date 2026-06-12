@@ -43,59 +43,10 @@ class _ProductCardState extends State<ProductCard> {
     }
   }
 
-  // ✅ Mapeamento otimizado com cache
-  String _getProductImageUrl(String productName) {
-    final name = productName.toLowerCase().trim();
-
-    if (name.contains('paracetamol')) {
-      return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('vitamina c') ||
-        name.contains('redoxon') ||
-        name.contains('zinco')) {
-      return 'https://www.vhita.com.br/cdn/shop/files/vitamina_c_vitamina_c_vhita_1_still_1x_ab10ca45-d01a-4431-ab5f-e68755af6659.webp?v=1733786542';
-    }
-    if (name.contains('ômega') ||
-        name.contains('omega') ||
-        name.contains('suplemento')) {
-      return 'https://images.unsplash.com/photo-1545214919-04d306029a5a?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('sérum') ||
-        name.contains('serum') ||
-        name.contains('facial')) {
-      return 'https://hidrabene.com.br/products/serum-facial-hidratante-multivitaminico?srsltid=AfmBOopC6a5EqlHhO1-4O2kD094qTpv1FQbiSkX0q2D6AfB2zeMY5rCk';
-    }
-    if (name.contains('hidratante corporal') ||
-        name.contains('cerave') ||
-        name.contains('intensivo')) {
-      return 'https://hidratei.com.br/cdn/shop/files/locao-hidratante-corporal-400ml-para-presentear-hidratei-925404.png?v=1774459474&width=1080';
-    }
-    if (name.contains('protetor labial') ||
-        name.contains('nivea') ||
-        name.contains('labial')) {
-      return 'https://images.unsplash.com/photo-1608248597481-496100c80836?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('protetor solar')) {
-      return 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('ibuprofeno')) {
-      return 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('shampoo') || name.contains('anticaspa')) {
-      return 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('fexofenadina') || name.contains('cloridrato')) {
-      return 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500&auto=format&fit=crop&q=80';
-    }
-
-    return 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=80';
-  }
-
   void _addToCart() {
     CartManager.instance.addProduct(widget.product);
     widget.onAddedToCart?.call();
 
-    // ✅ Feedback visual ao usuário
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -127,11 +78,11 @@ class _ProductCardState extends State<ProductCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Bloco da Imagem Dinâmica e Otimizada ---
+            // --- Imagem ---
             Stack(
               children: [
                 Image.network(
-                  _getProductImageUrl(widget.product.name),
+                  widget.product.imageUrl,
                   width: double.infinity,
                   height: 125,
                   fit: BoxFit.cover,
@@ -186,7 +137,7 @@ class _ProductCardState extends State<ProductCard> {
               ],
             ),
 
-            // --- Informações de Texto do Card ---
+            // --- Informações ---
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10),
@@ -234,7 +185,6 @@ class _ProductCardState extends State<ProductCard> {
                             color: Color(0xFF007AFA),
                           ),
                         ),
-                        // ✅ Botão de adicionar ao carrinho funcional
                         Material(
                           color: _isInCart
                               ? const Color(0xFF00A86B)
@@ -311,23 +261,6 @@ class _ProductRowTileState extends State<ProductRowTile> {
     }
   }
 
-  String _getRowProductImageUrl(String productName) {
-    final name = productName.toLowerCase().trim();
-    if (name.contains('ibuprofeno')) {
-      return 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('fexofenadina')) {
-      return 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('protetor solar')) {
-      return 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=500&auto=format&fit=crop&q=80';
-    }
-    if (name.contains('shampoo')) {
-      return 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500&auto=format&fit=crop&q=80';
-    }
-    return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80';
-  }
-
   void _addToCart() {
     CartManager.instance.addProduct(widget.product);
     widget.onAddedToCart?.call();
@@ -363,10 +296,17 @@ class _ProductRowTileState extends State<ProductRowTile> {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            _getRowProductImageUrl(widget.product.name),
+            widget.product.imageUrl,
             width: 48,
             height: 48,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.green.shade50,
+                child: Icon(Icons.medical_services_outlined,
+                    color: Colors.green.shade600),
+              );
+            },
           ),
         ),
         title: Text(
@@ -398,11 +338,10 @@ class _ProductRowTileState extends State<ProductRowTile> {
               ),
             ),
             const SizedBox(width: 8),
-            // ✅ Botão de adicionar ao carrinho funcional
             IconButton(
               icon: Icon(
                 _isInCart ? Icons.check_circle : Icons.add_shopping_cart_rounded,
-                color: _isInCart ? const Color(0xFF00A86B) : const Color(0xFF00A86B),
+                color: const Color(0xFF00A86B),
                 size: 20,
               ),
               onPressed: _isInCart ? null : _addToCart,
