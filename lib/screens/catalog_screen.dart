@@ -19,6 +19,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Febre e Dor',
       price: 8.50,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Paracetamol',
     ),
     Product(
       name: 'Vitamina C + Zinco 1g',
@@ -27,6 +28,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Imunidade',
       price: 22.00,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Vitamina+C+%2B+Zinco',
     ),
     Product(
       name: 'Suplemento Ômega 3 1000mg',
@@ -35,6 +37,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Suplementação',
       price: 89.90,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Omega+3',
     ),
     Product(
       name: 'Sérum Facial Vitamina C',
@@ -43,6 +46,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Cuidados Diários',
       price: 149.90,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Serum+Facial',
     ),
     Product(
       name: 'Hidratante Corporal Intensivo',
@@ -51,6 +55,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Pele Seca',
       price: 65.00,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Hidratante+Corporal',
     ),
     Product(
       name: 'Protetor Labial Hidratante',
@@ -59,6 +64,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       symptom: 'Lábios Ressecados',
       price: 15.90,
       isPromo: true,
+      imageUrl: 'https://via.placeholder.com/150?text=Protetor+Labial',
     ),
   ];
 

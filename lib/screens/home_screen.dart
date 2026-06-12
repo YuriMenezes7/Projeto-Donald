@@ -3,6 +3,25 @@ import 'cart_screen.dart';
 import '../widgets/product_components.dart';
 import '../models/product_model.dart';
 
+// Simple CartManager singleton used by catalog cards.
+// Keep minimal API used in this file: instance, addListener, removeListener,
+// isInCart(Product) and addProduct(Product).
+class CartManager extends ChangeNotifier {
+  CartManager._privateConstructor();
+  static final CartManager instance = CartManager._privateConstructor();
+
+  final List<Product> _items = [];
+
+  bool isInCart(Product p) => _items.contains(p);
+
+  void addProduct(Product p) {
+    if (!_items.contains(p)) {
+      _items.add(p);
+      notifyListeners();
+    }
+  }
+}
+
 // ===========================================================================
 // WIDGET PRINCIPAL: GERENCIADOR DE ABAS
 // ===========================================================================
