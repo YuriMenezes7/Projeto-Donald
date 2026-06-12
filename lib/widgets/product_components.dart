@@ -18,17 +18,16 @@ class ProductCard extends StatelessWidget {
       return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80';
     } 
     if (name.contains('vitamina c') || name.contains('redoxon') || name.contains('zinco')) {
-      return 'https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=500&auto=format&fit=crop&q=80';
+      return 'https://www.vhita.com.br/cdn/shop/files/vitamina_c_vitamina_c_vhita_1_still_1x_ab10ca45-d01a-4431-ab5f-e68755af6659.webp?v=1733786542';
     } 
     if (name.contains('ômega') || name.contains('omega') || name.contains('suplemento')) {
       return 'https://images.unsplash.com/photo-1545214919-04d306029a5a?w=500&auto=format&fit=crop&q=80';
     } 
     if (name.contains('sérum') || name.contains('serum') || name.contains('facial')) {
-      // 🌟 Imagem oficial do Sérum Vitamina C Sweet Skin - Dailus adicionada!
-      return 'https://www.dailus.com.br/products/serum-vitamina-c-sweet-skin?srsltid=AfmBOopH8vSsGszDhhWcUUHXWUvhJaB3nMaw5jPqHcA_F8iGTw-jkpEI';
+      return 'https://hidrabene.com.br/products/serum-facial-hidratante-multivitaminico?srsltid=AfmBOopC6a5EqlHhO1-4O2kD094qTpv1FQbiSkX0q2D6AfB2zeMY5rCk';
     } 
     if (name.contains('hidratante corporal') || name.contains('cerave') || name.contains('intensivo')) {
-      return 'https://images.unsplash.com/photo-1556229174-5e42a09e45af?w=500&auto=format&fit=crop&q=80';
+      return 'https://hidratei.com.br/cdn/shop/files/locao-hidratante-corporal-400ml-para-presentear-hidratei-925404.png?v=1774459474&width=1080';
     } 
     if (name.contains('protetor labial') || name.contains('nivea') || name.contains('labial')) {
       return 'https://images.unsplash.com/photo-1608248597481-496100c80836?w=500&auto=format&fit=crop&q=80';
