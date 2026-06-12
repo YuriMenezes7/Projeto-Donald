@@ -1,0 +1,26 @@
+2026-06-12 13:57:17.959: [INFO] VisibilityChanged: 0
+2026-06-12 13:57:18.005: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.007: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.009: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.011: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.013: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.015: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.017: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.019: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.021: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.023: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.025: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:18.044: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-06-12 13:57:18.044: [INFO] OnDoneLoading sync enabled: 0
+2026-06-12 13:57:18.049: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:21.120: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-06-12 13:57:21.124: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-06-12 13:57:21.127: [INFO] Primary account changed.
+2026-06-12 13:57:21.127: [INFO] OnPrimaryAccountChanged PrimaryAccountChangeEvent::Type::kSet
+2026-06-12 13:57:21.132: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-06-12 13:57:21.161: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-06-12 13:57:24.768: [INFO] BookmarkNodeAdded, ABU: 0
+2026-06-12 13:57:24.769: [INFO] BookmarkNodeAdded, ABU: 0
+2026-06-12 13:57:24.772: [INFO] BookmarkNodeAdded, ABU: 0
+2026-06-12 13:57:24.774: [INFO] BookmarkNodeAdded, ABU: 0
+2026-06-12 13:57:26.154: [INFO] Sync initialization duration: 4836ms
