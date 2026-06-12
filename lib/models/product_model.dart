@@ -1,19 +1,29 @@
 class Product {
+  final String id;          // ✅ Identificador único para evitar duplicatas
   final String name;      
-  final String category;  // Alinhado perfeitamente com as Abas do seu Catálogo
+  final String category;    // Alinhado perfeitamente com as Abas do seu Catálogo
   final String brand;     
   final String symptom;   
   final double price;     
   final bool isPromo;     
 
   Product({
+    String? id,  // ✅ ID auto-gerado se não fornecido
     required this.name,
     required this.category,
     required this.brand,
     required this.symptom,
     required this.price,
     this.isPromo = false,
-  });
+  }) : id = id ?? '${name.replaceAll(' ', '_')}_${category.replaceAll(' ', '_')}';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 final List<Product> mockProducts = [
