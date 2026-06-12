@@ -1,35 +1,78 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
+import '../models/cart_manager.dart';
 
 // ===========================================================================
 // CARD DE PRODUTO (LAYOUT HORIZONTAL / EM GRADE)
 // ===========================================================================
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final Product product;
+  final VoidCallback? onAddedToCart;
 
-  const ProductCard({required this.product, super.key});
+  const ProductCard({
+    required this.product,
+    this.onAddedToCart,
+    super.key,
+  });
 
-  // Mapeamento mestre e exclusivo de imagens em alta definição por palavra-chave
-  // Mapeamento mestre e exclusivo de imagens em alta definição por palavra-chave
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  late bool _isInCart;
+
+  @override
+  void initState() {
+    super.initState();
+    _isInCart = CartManager.instance.isInCart(widget.product);
+    CartManager.instance.addListener(_updateCartStatus);
+  }
+
+  @override
+  void dispose() {
+    CartManager.instance.removeListener(_updateCartStatus);
+    super.dispose();
+  }
+
+  void _updateCartStatus() {
+    if (mounted) {
+      setState(() {
+        _isInCart = CartManager.instance.isInCart(widget.product);
+      });
+    }
+  }
+
+  // ✅ Mapeamento otimizado com cache
   String _getProductImageUrl(String productName) {
     final name = productName.toLowerCase().trim();
-    
+
     if (name.contains('paracetamol')) {
       return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80';
-    } 
-    if (name.contains('vitamina c') || name.contains('redoxon') || name.contains('zinco')) {
+    }
+    if (name.contains('vitamina c') ||
+        name.contains('redoxon') ||
+        name.contains('zinco')) {
       return 'https://www.vhita.com.br/cdn/shop/files/vitamina_c_vitamina_c_vhita_1_still_1x_ab10ca45-d01a-4431-ab5f-e68755af6659.webp?v=1733786542';
-    } 
-    if (name.contains('ômega') || name.contains('omega') || name.contains('suplemento')) {
+    }
+    if (name.contains('ômega') ||
+        name.contains('omega') ||
+        name.contains('suplemento')) {
       return 'https://images.unsplash.com/photo-1545214919-04d306029a5a?w=500&auto=format&fit=crop&q=80';
-    } 
-    if (name.contains('sérum') || name.contains('serum') || name.contains('facial')) {
+    }
+    if (name.contains('sérum') ||
+        name.contains('serum') ||
+        name.contains('facial')) {
       return 'https://hidrabene.com.br/products/serum-facial-hidratante-multivitaminico?srsltid=AfmBOopC6a5EqlHhO1-4O2kD094qTpv1FQbiSkX0q2D6AfB2zeMY5rCk';
-    } 
-    if (name.contains('hidratante corporal') || name.contains('cerave') || name.contains('intensivo')) {
+    }
+    if (name.contains('hidratante corporal') ||
+        name.contains('cerave') ||
+        name.contains('intensivo')) {
       return 'https://hidratei.com.br/cdn/shop/files/locao-hidratante-corporal-400ml-para-presentear-hidratei-925404.png?v=1774459474&width=1080';
-    } 
-    if (name.contains('protetor labial') || name.contains('nivea') || name.contains('labial')) {
+    }
+    if (name.contains('protetor labial') ||
+        name.contains('nivea') ||
+        name.contains('labial')) {
       return 'https://images.unsplash.com/photo-1608248597481-496100c80836?w=500&auto=format&fit=crop&q=80';
     }
     if (name.contains('protetor solar')) {
@@ -44,8 +87,23 @@ class ProductCard extends StatelessWidget {
     if (name.contains('fexofenadina') || name.contains('cloridrato')) {
       return 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500&auto=format&fit=crop&q=80';
     }
-    
+
     return 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=80';
+  }
+
+  void _addToCart() {
+    CartManager.instance.addProduct(widget.product);
+    widget.onAddedToCart?.call();
+
+    // ✅ Feedback visual ao usuário
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.product.name} adicionado ao carrinho! ✓'),
+        backgroundColor: const Color(0xFF00A86B),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -73,10 +131,10 @@ class ProductCard extends StatelessWidget {
             Stack(
               children: [
                 Image.network(
-                  _getProductImageUrl(product.name),
+                  _getProductImageUrl(widget.product.name),
                   width: double.infinity,
-                  height: 125, // Proporção idêntica e fixa para todos os cards
-                  fit: BoxFit.cover, // Garante o preenchimento simétrico perfeito
+                  height: 125,
+                  fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       height: 125,
@@ -85,36 +143,49 @@ class ProductCard extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.medical_services_outlined, color: Colors.green.shade600, size: 28),
+                          Icon(Icons.medical_services_outlined,
+                              color: Colors.green.shade600, size: 28),
                           const SizedBox(height: 4),
                           Text(
-                            product.category,
-                            style: TextStyle(color: Colors.green.shade800, fontSize: 9, fontWeight: FontWeight.bold),
+                            widget.product.category,
+                            style: TextStyle(
+                              color: Colors.green.shade800,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     );
                   },
                 ),
-                if (product.isPromo)
+                if (widget.product.isPromo)
                   Positioned(
                     top: 8,
                     left: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFF4D4D),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Text(
                         'OFERTA',
-                        style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ),
               ],
             ),
-            
+
             // --- Informações de Texto do Card ---
             Expanded(
               child: Padding(
@@ -127,15 +198,25 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.brand.toUpperCase(),
-                          style: TextStyle(color: Colors.grey.shade500, fontSize: 9, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                          widget.product.brand.toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          product.name,
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87, height: 1.2),
+                          widget.product.name,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                            height: 1.2,
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -146,18 +227,33 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'R\$ ${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF007AFA)),
+                          'R\$ ${widget.product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF007AFA),
+                          ),
                         ),
+                        // ✅ Botão de adicionar ao carrinho funcional
                         Material(
-                          color: const Color(0xFFE6F7F0),
+                          color: _isInCart
+                              ? const Color(0xFF00A86B)
+                              : const Color(0xFFE6F7F0),
                           borderRadius: BorderRadius.circular(8),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(8),
-                            onTap: () {},
-                            child: const Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Icon(Icons.add_shopping_cart_rounded, color: Color(0xFF00A86B), size: 18),
+                            onTap: _isInCart ? null : _addToCart,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6),
+                              child: Icon(
+                                _isInCart
+                                    ? Icons.check_circle
+                                    : Icons.add_shopping_cart_rounded,
+                                color: _isInCart
+                                    ? Colors.white
+                                    : const Color(0xFF00A86B),
+                                size: 18,
+                              ),
                             ),
                           ),
                         ),
@@ -177,10 +273,43 @@ class ProductCard extends StatelessWidget {
 // ===========================================================================
 // CARD EM LINHA (LAYOUT VERTICAL DOS MAIS VENDIDOS)
 // ===========================================================================
-class ProductRowTile extends StatelessWidget {
+class ProductRowTile extends StatefulWidget {
   final Product product;
+  final VoidCallback? onAddedToCart;
 
-  const ProductRowTile({required this.product, super.key});
+  const ProductRowTile({
+    required this.product,
+    this.onAddedToCart,
+    super.key,
+  });
+
+  @override
+  State<ProductRowTile> createState() => _ProductRowTileState();
+}
+
+class _ProductRowTileState extends State<ProductRowTile> {
+  late bool _isInCart;
+
+  @override
+  void initState() {
+    super.initState();
+    _isInCart = CartManager.instance.isInCart(widget.product);
+    CartManager.instance.addListener(_updateCartStatus);
+  }
+
+  @override
+  void dispose() {
+    CartManager.instance.removeListener(_updateCartStatus);
+    super.dispose();
+  }
+
+  void _updateCartStatus() {
+    if (mounted) {
+      setState(() {
+        _isInCart = CartManager.instance.isInCart(widget.product);
+      });
+    }
+  }
 
   String _getRowProductImageUrl(String productName) {
     final name = productName.toLowerCase().trim();
@@ -197,6 +326,20 @@ class ProductRowTile extends StatelessWidget {
       return 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500&auto=format&fit=crop&q=80';
     }
     return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80';
+  }
+
+  void _addToCart() {
+    CartManager.instance.addProduct(widget.product);
+    widget.onAddedToCart?.call();
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.product.name} adicionado ao carrinho! ✓'),
+        backgroundColor: const Color(0xFF00A86B),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -220,20 +363,24 @@ class ProductRowTile extends StatelessWidget {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            _getRowProductImageUrl(product.name),
+            _getRowProductImageUrl(widget.product.name),
             width: 48,
             height: 48,
             fit: BoxFit.cover,
           ),
         ),
         title: Text(
-          product.name,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87),
+          widget.product.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: Colors.black87,
+          ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            '${product.brand} • ${product.symptom}',
+            '${widget.product.brand} • ${widget.product.symptom}',
             style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -243,13 +390,22 @@ class ProductRowTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'R\$ ${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF007AFA)),
+              'R\$ ${widget.product.price.toStringAsFixed(2)}',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: Color(0xFF007AFA),
+              ),
             ),
             const SizedBox(width: 8),
+            // ✅ Botão de adicionar ao carrinho funcional
             IconButton(
-              icon: const Icon(Icons.add_shopping_cart_rounded, color: Color(0xFF00A86B), size: 20),
-              onPressed: () {},
+              icon: Icon(
+                _isInCart ? Icons.check_circle : Icons.add_shopping_cart_rounded,
+                color: _isInCart ? const Color(0xFF00A86B) : const Color(0xFF00A86B),
+                size: 20,
+              ),
+              onPressed: _isInCart ? null : _addToCart,
             ),
           ],
         ),
