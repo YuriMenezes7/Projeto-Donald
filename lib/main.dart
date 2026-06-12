@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'screens/auth_screen.dart'; // Conexão direta com a tela inicial separada
+import 'screens/auth_screen.dart';
+import 'models/cart_manager.dart';
 
 void main() {
+  // ✅ Inicializa o CartManager globalmente
+  CartManager.instance;
   runApp(const PharmaApp());
 }
 
@@ -23,7 +26,7 @@ class PharmaApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const AuthScreen(), // Inicia chamando o widget que agora mora no auth_screen.dart
+      home: const AuthScreen(),
     );
   }
 }
