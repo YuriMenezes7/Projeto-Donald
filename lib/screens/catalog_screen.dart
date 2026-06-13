@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
+import '../models/cart_manager.dart';
 import '../widgets/product_components.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -10,66 +11,28 @@ class CatalogScreen extends StatefulWidget {
 }
 
 class _CatalogScreenState extends State<CatalogScreen> {
-  // Simulação do repositório de dados com os produtos corretos mapeados
-  final List<Product> _catalogProducts = [
-    Product(
-      name: 'Paracetamol 500mg',
-      brand: 'Medley',
-      category: 'Medicamentos',
-      symptom: 'Febre e Dor',
-      price: 8.50,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Paracetamol',
-    ),
-    Product(
-      name: 'Vitamina C + Zinco 1g',
-      brand: 'Redoxon',
-      category: 'Vitaminas',
-      symptom: 'Imunidade',
-      price: 22.00,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Vitamina+C+%2B+Zinco',
-    ),
-    Product(
-      name: 'Suplemento Ômega 3 1000mg',
-      brand: 'Essential Nutrition',
-      category: 'Vitaminas',
-      symptom: 'Suplementação',
-      price: 89.90,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Omega+3',
-    ),
-    Product(
-      name: 'Sérum Facial Vitamina C',
-      brand: 'La Roche-Posay',
-      category: 'Beleza',
-      symptom: 'Cuidados Diários',
-      price: 149.90,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Serum+Facial',
-    ),
-    Product(
-      name: 'Hidratante Corporal Intensivo',
-      brand: 'CeraVe',
-      category: 'Beleza',
-      symptom: 'Pele Seca',
-      price: 65.00,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Hidratante+Corporal',
-    ),
-    Product(
-      name: 'Protetor Labial Hidratante',
-      brand: 'Nivea',
-      category: 'Beleza',
-      symptom: 'Lábios Ressecados',
-      price: 15.90,
-      isPromo: true,
-      imageUrl: 'https://via.placeholder.com/150?text=Protetor+Labial',
-    ),
-  ];
+  late String _selectedCategory;
+  late List<String> _categories;
+
+  @override
+  void initState() {
+    super.initState();
+    // Extract unique categories from mock products and sort
+    _categories = mockProducts
+        .map((p) => p.category)
+        .toSet()
+        .toList()
+        ..sort();
+    _selectedCategory = _categories.isNotEmpty ? _categories.first : '';
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Filter products by selected category
+    final filteredProducts = mockProducts
+        .where((p) => p.category == _selectedCategory)
+        .toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
@@ -77,13 +40,13 @@ class _CatalogScreenState extends State<CatalogScreen> {
           'Catálogo de Produtos',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF00A86B), // Verde institucional Planck Pharma
+        backgroundColor: const Color(0xFF00A86B),
         elevation: 0,
         centerTitle: false,
       ),
       body: Column(
         children: [
-          // Banner discreto superior para credibilidade de mercado
+          // Banner de credibilidade
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -94,30 +57,75 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 const SizedBox(width: 8),
                 Text(
                   'Medicamentos e produtos com procedência garantida',
-                  style: TextStyle(color: Colors.green.shade800, fontSize: 12, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: Colors.green.shade800,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
           ),
-          
-          // Grid dinâmico que exibe os cards de produtos de forma responsiva
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(14),
-              itemCount: _catalogProducts.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,          // Exibe 2 itens por linha na grade
-                crossAxisSpacing: 12,       // Espaçamento horizontal entre cards
-                mainAxisSpacing: 12,        // Espaçamento vertical entre linhas
-                childAspectRatio: 0.72,     // Proporção ideal para o layout vertical do ProductCard
+
+          // Abas de categorias
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: SizedBox(
+              height: 50,
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  final category = _categories[index];
+                  final isSelected = category == _selectedCategory;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: FilterChip(
+                      label: Text(category),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        if (selected) {
+                          setState(() => _selectedCategory = category);
+                        }
+                      },
+                      backgroundColor: Colors.grey.shade100,
+                      selectedColor: const Color(0xFF00A86B),
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                },
               ),
-              itemBuilder: (context, index) {
-                final product = _catalogProducts[index];
-                
-                // Reaproveitando o ProductCard que já possui o tratamento inteligente de imagens e clique de carrinho
-                return ProductCard(product: product);
-              },
             ),
+          ),
+
+          // Grid de produtos
+          Expanded(
+            child: filteredProducts.isEmpty
+                ? Center(
+                    child: Text(
+                      'Nenhum produto em "$_selectedCategory"',
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.all(14),
+                    itemCount: filteredProducts.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.72,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = filteredProducts[index];
+                      return ProductCard(product: product);
+                    },
+                  ),
           ),
         ],
       ),
