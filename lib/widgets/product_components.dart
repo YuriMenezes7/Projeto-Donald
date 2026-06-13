@@ -3,7 +3,7 @@ import '../models/product_model.dart';
 import '../models/cart_manager.dart';
 
 // ===========================================================================
-// CARD DE PRODUTO (LAYOUT HORIZONTAL / EM GRADE)
+// CARD DE PRODUTO (LAYOUT EM GRADE)
 // ===========================================================================
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -44,9 +44,13 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   void _addToCart() {
+    // Add product to cart
     CartManager.instance.addProduct(widget.product);
+    
+    // Trigger optional callback
     widget.onAddedToCart?.call();
 
+    // Show confirmation snackbar
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -78,7 +82,7 @@ class _ProductCardState extends State<ProductCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Imagem ---
+            // --- Imagem com badge de promoção ---
             Stack(
               children: [
                 Image.network(
@@ -137,7 +141,7 @@ class _ProductCardState extends State<ProductCard> {
               ],
             ),
 
-            // --- Informações ---
+            // --- Informações do produto ---
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10),
@@ -173,6 +177,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ],
                     ),
+                    // --- Preço e botão de adicionar ---
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,7 +226,7 @@ class _ProductCardState extends State<ProductCard> {
 }
 
 // ===========================================================================
-// CARD EM LINHA (LAYOUT VERTICAL DOS MAIS VENDIDOS)
+// CARD EM LINHA (LAYOUT HORIZONTAL PARA MAIS VENDIDOS)
 // ===========================================================================
 class ProductRowTile extends StatefulWidget {
   final Product product;
@@ -262,9 +267,13 @@ class _ProductRowTileState extends State<ProductRowTile> {
   }
 
   void _addToCart() {
+    // Add product to cart
     CartManager.instance.addProduct(widget.product);
+    
+    // Trigger optional callback
     widget.onAddedToCart?.call();
 
+    // Show confirmation snackbar
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
